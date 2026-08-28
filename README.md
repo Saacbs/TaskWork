@@ -3,8 +3,9 @@ Sobre o projeto
 Nossa ideia é desenvolver um sistema web de suporte técnico que possa ser utilizado por empresas para agilizar o atendimento de solicitações e reduzir o tempo de espera dos colaboradores.
 
 O sistema terá como objetivo centralizar os chamados de suporte, permitindo que a equipe responsável acompanhe, gerencie e solucione os problemas de forma organizada.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Funcionalidades:
 
-Funcionalidades
 Criar chamados
 O sistema permitirá a criação de chamados, gerando automaticamente um número de identificação único para cada solicitação. Esse número poderá ser utilizado posteriormente para consultar e acompanhar o chamado.
 

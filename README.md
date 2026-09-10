@@ -1,4 +1,4 @@
-# Projeto-Chamados
+# TaskWork
 Sobre o projeto
 Nossa ideia é desenvolver um sistema web de suporte técnico que possa ser utilizado por empresas para agilizar o atendimento de solicitações e reduzir o tempo de espera dos colaboradores.
 

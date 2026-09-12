@@ -1,50 +1,186 @@
 # TaskWork
-Sobre o projeto
-Nossa ideia é desenvolver um sistema web de suporte técnico que possa ser utilizado por empresas para agilizar o atendimento de solicitações e reduzir o tempo de espera dos colaboradores.
 
-O sistema terá como objetivo centralizar os chamados de suporte, permitindo que a equipe responsável acompanhe, gerencie e solucione os problemas de forma organizada.
------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Funcionalidades:
+Sistema web para abertura, acompanhamento e gerenciamento de chamados de suporte técnico em ambientes corporativos.
 
-Criar chamados
-O sistema permitirá a criação de chamados, gerando automaticamente um número de identificação único para cada solicitação. Esse número poderá ser utilizado posteriormente para consultar e acompanhar o chamado.
+O **TaskWork** tem como objetivo centralizar solicitações de colaboradores, facilitar o trabalho da equipe de suporte e manter todo o histórico de atendimento organizado e acessível.
 
-No momento da abertura, o usuário deverá preencher informações que auxiliem a equipe de suporte a compreender e solucionar o problema.
+## Visão geral
 
-Por exemplo, em um chamado de instalação de software:
+O TaskWork foi planjado para substituir processos descentralizados, como pedidos de suporte enviados por mensagens, ligações ou planilhas. Como um dos principais objetivos, o TaskWork deve ser um sistema de chamados de facil manuseio. A aplicação reúne os chamados em um único ambiente e permite acompanhar cada solicitação desde a abertura até a resolução.
 
-"Recentemente recebi um upgrade na minha licença do Office e agora posso utilizá-lo através do aplicativo instalado na máquina, em vez de utilizar somente a versão web."
+### Objetivos específicos
 
-Nesse caso, após a análise e aprovação do chamado, a equipe de suporte poderá realizar a instalação do Office e alterar o status do chamado para "Resolvido".
+- Padronizar a abertura de solicitações de suporte.
+- Permitir que o colaborador acompanhe seus próprios chamados.
+- Oferecer à equipe administrativa uma visão completa da operação.
+- Registrar alterações e interações no histórico de cada chamado.
+- Disponibilizar indicadores para acompanhamento dos atendimentos.
 
-Consultar chamados
-Será possível consultar um chamado utilizando seu número de identificação.
+## Perfis de acesso
 
-Dentro da consulta, serão apresentadas informações como:
+| Perfil | Permissões principais |
+|---|---|
+| Visitante | Acessar a página pública, consultar indicadores gerais, visualizar categorias, consultar um chamado pelo número e acessar o login |
+| Colaborador | Abrir chamados, consultar os próprios chamados, pesquisar solicitações e visualizar detalhes e histórico |
+| Administrador | Visualizar todos os chamados, aplicar filtros, atualizar status, registrar observações, aprovar, recusar e concluir atendimentos |
 
-Nome do colaborador
-E-mail empresarial
-ID da empresa
-Número de telefone
-Descrição do problema
-Número do chamado
-Status atual do chamado
-Os chamados poderão possuir diferentes estados, como:
+## Funcionalidades do sistema
 
-Não resolvido
-Em atendimento
-Aguardando contato
-Resolvido
-Gerenciar solicitações
-Usuários com níveis maiores de permissão poderão gerenciar as solicitações, podendo analisar, aprovar ou negar chamados.
+### 1. Portal público
 
-Essa funcionalidade permitirá controlar solicitações que não sejam consideradas necessárias ou que não estejam de acordo com as políticas da empresa.
+- Apresentação do serviço e de seus benefícios.
+-  Exibição de indicadores calculados com base nos chamados cadastrados.
+-  Listagem das categorias de atendimento disponíveis.
+-  Explicação resumida das etapas de atendimento.
+-  Consulta pública de chamado pelo número de protocolo.
+-  Seção de perguntas frequentes.
+-  Navegação para a área de autenticação.
+-  Conteúdo institucional administrável pelo backend.
+-  Central de ajuda com artigos e pesquisa por assunto.
 
-Por exemplo:
+### 2. Autenticação e controle de acesso
 
-"Quero um computador novo porque não gostei do meu."
+-  Login com e-mail e senha utilizando contas fakes.
+-  Opção para exibir ou ocultar a senha.
+-  Preenchimento rápido das credenciais demonstrativas.
+-  Redirecionamento conforme o perfil autenticado.
+-  Proteção das páginas de colaborador e administrador por perfil.
+-  Encerramento da sessão por meio da opção **Sair**.
+-  Cadastro e ativação de novos usuários.
+-  Autenticação real com senha criptografada.
+-  Recuperação e redefinição de senha.
+-  Controle de acesso baseado em papéis e permissões.
+- Expiração segura da sessão e renovação de acesso.
 
-Nesse caso, o responsável pelo suporte ou administrador poderá analisar a solicitação e decidir se ela deve ser aprovada ou recusada.
+### 3. Painel do colaborador
 
-Objetivo
-O projeto busca criar uma ferramenta de suporte técnico simples e eficiente, proporcionando maior organização no atendimento, facilidade para acompanhar solicitações e melhor controle sobre os chamados realizados pelos colaboradores.
+-  Mensagem de "bem vindo" com nome do usuário autenticado.
+-  Indicadores dos chamados do colaborador: em aberto, em atendimento, aguardando contato e resolvidos.
+-  Listagem dos chamados pertencentes ao colaborador.
+- Pesquisa por número, título, categoria ou status.
+-  Acesso rápido à abertura de um novo chamado.
+-  Visualização detalhada da solicitação e de seu histórico.
+- Paginação e ordenação dos resultados.
+- Reabertura de chamados dentro de um prazo configurável.
+- Avaliação do atendimento após a resolução.
+
+### 4. Abertura de chamado
+
+-  Formulário com nome, e-mail, empresa, telefone, categoria, título, descrição e prioridade.
+-  Validação dos campos obrigatórios.
+-  Validação de descrição com no mínimo 20 caracteres.
+-  Geração automática de protocolo 
+-  Definição automática do status inicial como **Não resolvido**.
+-  Registro da data de criação e da primeira ocorrência no histórico.
+-  Tela de confirmação com o número do chamado gerado.
+- Inclusão de arquivos anexos, como imagens, documentos e evidências.
+- Validação de formato e tamanho dos anexos.
+- Sugestão de artigos da central de ajuda antes da abertura.
+- Envio de confirmação por e-mail.
+
+### 5. Consulta e detalhes do chamado
+
+- Exibição do número, título, descrição, categoria, prioridade e status.
+-  Exibição dos dados do solicitante, empresa e telefone.
+- Exibição das datas de criação e última atualização.
+- Histórico cronológico das movimentações do chamado.
+- Exibição do motivo quando um chamado é recusado.
+- Consulta pública por protocolo em modo somente leitura.
+- Restrição para que o colaborador visualize somente seus próprios chamados.
+- Comentários entre solicitante e equipe de suporte.
+- Impressão ou exportação do atendimento em PDF.
+
+### 6. Painel administrativo
+
+- Indicadores de total, não resolvidos, em atendimento, aguardando contato e resolvidos.
+- Listagem de todos os chamados cadastrados.
+- Pesquisa por número, solicitante, título ou e-mail.
+- Filtros por status, categoria e prioridade.
+- Opção para limpar todos os filtros.
+- Acesso aos detalhes de qualquer chamado.
+- Início do atendimento.
+- Solicitação de contato ou de informações adicionais.
+- Envio do chamado para aprovação.
+- Aprovação e retorno do chamado ao atendimento.
+- Registro de observações da equipe de suporte.
+- Resolução do chamado.
+- Recusa com preenchimento obrigatório do motivo.
+- Atualização automática da data e do histórico a cada ação.
+- Atribuição do chamado a um atendente ou equipe.
+- Transferência entre setores.
+- Controle de prazo e nível de serviço (SLA).
+- Identificação visual de chamados atrasados.
+- Relatórios por período, categoria, prioridade, status e atendente.
+- Exportação de relatórios em CSV e PDF.
+
+### 7. Histórico e auditoria
+
+- Registro das principais mudanças ocorridas no chamado.
+- Identificação do autor, data e descrição da ocorrência.
+- Ordenação do histórico do evento mais recente para o mais antigo.
+- Registro imutável de auditoria no backend.
+- Armazenamento de valores anteriores e posteriores nas alterações críticas.
+- Consulta administrativa de atividades por usuário e período.
+
+## Fluxo de um chamado
+
+1. O colaborador autentica-se no sistema.
+2. Preenche o formulário e envia uma nova solicitação.
+3. O TaskWork gera um número de protocolo e registra o chamado como **Não resolvido**.
+4. Um administrador inicia o atendimento.
+5. Durante a análise, o chamado pode aguardar contato ou aprovação.
+6. Após o atendimento, o administrador resolve ou recusa a solicitação.
+7. Todas as movimentações são incluídas no histórico.
+8. O colaborador acompanha o resultado pelo painel ou pelo número do protocolo.
+
+### Estados dos chamados
+
+| Status | Descrição |
+|---|---|
+| Não resolvido | Chamado criado e aguardando o início do atendimento |
+| Em atendimento | Solicitação em análise pela equipe de suporte |
+| Aguardando contato | Atendimento depende de informações ou retorno do solicitante |
+| Aguardando aprovação | A execução depende da aprovação de uma pessoa responsável |
+| Resolvido | Solicitação concluída com sucesso |
+| Recusado | Solicitação não atendida, acompanhada de justificativa obrigatória |
+
+## Regras de negócio
+
+|  | Regra |
+|---|---|
+|  | Cada chamado deve possuir um número de protocolo único |
+| | Todo chamado deve estar associado a um solicitante e a uma categoria |
+|  | A descrição deve possuir pelo menos 20 caracteres |
+|  | Um novo chamado deve iniciar com o status **Não resolvido** |
+|  | O colaborador pode visualizar somente os próprios chamados |
+|  | Somente administradores podem executar ações administrativas |
+|  | A recusa exige o registro de uma justificativa |
+|  | Toda alteração relevante deve gerar uma ocorrência no histórico |
+|  | A data de atualização deve ser modificada a cada movimentação |
+|  | A consulta pública deve apresentar somente informações não sensíveis |
+|  | A prioridade deve ser **Baixa**, **Média**, **Alta** ou **Crítica** |
+|  | Categorias e usuários inativos não podem ser utilizados em novos chamados |
+
+### Categorias iniciais
+
+- Instalação de software
+- Problema de acesso
+- Equipamento
+- Rede ou internet
+- E-mail
+- Sistemas internos
+- Solicitação de equipamento
+- Outros
+
+## Modelo de dados
+
+O modelo relacional planejado utiliza as seguintes entidades principais:
+
+- **Empresa:** organização à qual os usuários pertencem.
+- **Usuário:** colaborador ou administrador que acessa o sistema.
+- **Categoria:** classificação utilizada na abertura do chamado.
+- **Chamado:** solicitação principal, com protocolo, descrição, status e prioridade.
+- **Histórico:** registro de todas as movimentações e observações do chamado.
+- **Anexo:** arquivo relacionado a um chamado ou a uma ocorrência.
+- **Avaliação:** nota e comentário do solicitante após a conclusão.
+

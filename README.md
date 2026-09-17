@@ -184,3 +184,11 @@ O modelo relacional planejado utiliza as seguintes entidades principais:
 - **Anexo:** arquivo relacionado a um chamado ou a uma ocorrência.
 - **Avaliação:** nota e comentário do solicitante após a conclusão.
 
+ ## Referenciamento
+
+  Protótipo
+
+  
+
+  
+

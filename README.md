@@ -235,8 +235,7 @@ O modelo relacional planejado utiliza as seguintes entidades principais:
 #### Cardinalidades
 [Visualizar cardinalidades](Imagens/Cardinalidades.png)
 #### Cardinalidades
-
-![Cardinalidades](./Imagens/Cardinalidades.png)
+[Visualizar cardinalidades](./Imagens/Cardinalidades.png)
 
   
 

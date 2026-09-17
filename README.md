@@ -184,72 +184,56 @@ O modelo relacional planejado utiliza as seguintes entidades principais:
 - **Anexo:** arquivo relacionado a um chamado ou a uma ocorrência.
 - **Avaliação:** nota e comentário do solicitante após a conclusão.
 
- ## Referenciamento
+## Referenciamento
 
 ### Protótipos das telas
 
-Os protótipos abaixo representam as principais telas e fluxos definidos para o sistema de gerenciamento de chamados.
-
-#### 1. Tela inicial
-
-![Página inicial](Images/1-Pagina%20inicial%20%28Não%20logavel%29.png)
+#### 1. Página inicial
+[Visualizar página inicial](Imagens/1-Pagina%20inicial%20%28Não%20logavel%29.png)
 
 #### 2. Login
-
-![Tela de login](Images/2-Login.png)
+[Visualizar tela de login](Imagens/2-%20Login.png)
 
 #### 3. Painel do colaborador
+[Visualizar painel do colaborador](Imagens/3-%20painel%20do%20colaborador.png)
 
-![Painel do colaborador](Images/3-%20painel%20do%20colaborador.png)
-
-#### 3.1 Painel do colaborador — Menu de notificações
-
-![Painel do colaborador após abertura do menu de notificações](Images/03.01%20%E2%80%94%20Painel%20do%20colaborador%20pós%20abertura%20de%20menu%20de%20notificações.png)
+#### 3.1. Menu de notificações
+[Visualizar menu de notificações](Imagens/03.01%20%E2%80%94%20Painel%20do%20colaborador%20pós%20abertura%20de%20menu%20de%20notificações.png)
 
 #### 4. Novo chamado
+[Visualizar tela de novo chamado](Imagens/04%20%E2%80%94%20Novo%20chamado.png)
 
-![Novo chamado](Images/04%20%E2%80%94%20Novo%20chamado.png)
-
-#### 4.1 Novo chamado após abertura
-
-![Novo chamado após abertura de chamado](Images/04.01%20%E2%80%94%20Novo%20chamado%20após%20abertura%20de%20chamado.png)
+#### 4.1. Novo chamado após abertura
+[Visualizar chamado após abertura](Imagens/04.01%20%E2%80%94%20Novo%20chamado%20após%20abertura%20de%20chamado.png)
 
 #### 5. Detalhes do chamado
-
-![Detalhes do chamado](Images/05%20%E2%80%94%20Detalhes%20do%20chamado.png)
+[Visualizar detalhes do chamado](Imagens/05%20%E2%80%94%20Detalhes%20do%20chamado.png)
 
 #### 6. Painel administrativo
-
-![Painel administrativo](Images/06%20%E2%80%94%20Painel%20administrativo.png)
+[Visualizar painel administrativo](Imagens/06%20%E2%80%94%20Painel%20administrativo.png)
 
 #### 7. Gestão do chamado
+[Visualizar gestão do chamado](Imagens/07%20%E2%80%94%20Gestão%20do%20chamado.png)
 
-![Gestão do chamado](Images/07%20%E2%80%94%20Gestão%20do%20chamado.png)
-
-#### 7.1 Tela de opção de cancelamento
-
-![Tela de opção de cancelamento](Images/07.01%20%E2%80%94%20Tela%20pós%20opção%20de%20cancelamento.png)
+#### 7.1. Opção de cancelamento
+[Visualizar tela de cancelamento](Imagens/07.01%20%E2%80%94%20Tela%20pós%20opção%20de%20cancelamento.png)
 
 #### 8. Relatórios
-
-![Relatórios](Images/08%20%E2%80%94%20Relatórios.png)
+[Visualizar relatórios](Imagens/08%20%E2%80%94%20Relatórios.png)
 
 #### 9. Cadastros
-
-![Cadastros](Images/09%20%E2%80%94%20Cadastros.png)
+[Visualizar cadastros](Imagens/09%20%E2%80%94%20Cadastros.png)
 
 #### 10. Auditoria
-
-![Auditoria](Images/10%20%E2%80%94%20Auditoria.png)
+[Visualizar auditoria](Imagens/10%20%E2%80%94%20Auditoria.png)
 
 ### Modelo de dados
 
-O modelo de dados foi desenvolvido para representar as principais entidades e seus relacionamentos dentro do sistema.
-
 #### Diagrama Entidade-Relacionamento
+[Visualizar diagrama entidade-relacionamento](Imagens/Diagrama%20entidade%20relacionamento.png)
 
-![Diagrama Entidade-Relacionamento](Images/Diagrama%20entidade%20relacionamento.png)
-
+#### Cardinalidades
+[Visualizar cardinalidades](Imagens/Cardinalidades.png)
 #### Cardinalidades
 
 ![Cardinalidades](Images/Cardinalidades.png)

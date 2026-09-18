@@ -216,7 +216,7 @@ O modelo relacional planejado utiliza as seguintes entidades principais:
 [Visualizar gestão do chamado](Imagens/07%20%E2%80%94%20Gestão%20do%20chamado.png)
 
 #### 7.1. Opção de cancelamento
-[Visualizar tela de cancelamento](Imagens/07.01%20%E2%80%94%20Tela%20pós%20opção%20de%20cancelamento.png)
+[Visualizar tela de cancelamento](Imagens/07.01%20%E2%80%94%20Tela%20pós%20opção%20de%20calcelamento.png)
 
 #### 8. Relatórios
 [Visualizar relatórios](Imagens/08%20%E2%80%94%20Relatórios.png)

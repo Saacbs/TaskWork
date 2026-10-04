@@ -1,4 +1,7 @@
-package br.com.taskwork.servlet;
+package Servlet;
+
+import dao.EmpresaDAO;
+import model.Empresa;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -7,8 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/create-chamados")
-public class CreateChamadosServlet extends HttpServlet {
+@WebServlet("/create-empresa")
+public class CreateEmpresaServlet extends HttpServlet {
 
     @Override
     protected void doPost(
@@ -16,13 +19,14 @@ public class CreateChamadosServlet extends HttpServlet {
             HttpServletResponse resposta
     ) throws ServletException, IOException {
 
-        String nomecolab = pedir.getParameter("nome");
-        String emailcolab = pedir.getParameter("email");
-        String numero = pedir.getParameter("numero");
+        String nome = pedir.getParameter("nome");
+        String cnpj = pedir.getParameter("cnpj");
 
-        System.out.println(nomecolab);
-        System.out.println(emailcolab);
-        System.out.println(numero);
+        Empresa empresa = new Empresa();
+        empresa.setName(nome);
+        empresa.setCnpj(cnpj);
+
+        new EmpresaDAO().createEmpresa(empresa);
 
         resposta.sendRedirect("index.html");
     }

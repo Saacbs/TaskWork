@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Colaborador</title>
+</head>
+<body>
+
+<h2>Criar Colaborador</h2>
+
+<form action="create-colaborador" method="post">
+
+    <label for="nome">Digite o nome do colaborador:</label>
+    <input type="text" name="nome" id="nome" required>
+
+    <label for="email">Digite o e-mail do colaborador:</label>
+    <input type="email" name="email" id="email" required>
+
+    <label for="telefone">Digite o telefone do colaborador:</label>
+    <input type="text" name="telefone" id="telefone" required>
+
+    <label for="idDaEmpresa">Empresa:</label>
+    <select name="idDaEmpresa" id="idDaEmpresa" required>
+        <option value="">Carregando empresas...</option>
+    </select>
+
+    <button type="submit">Cadastrar</button>
+
+    <button type="button" onclick="window.location.href='index.html'">
+        Voltar
+    </button>
+
+</form>
+
+<script>
+    fetch('create-colaborador')
+        .then(resposta => {
+            if (!resposta.ok) {
+                throw new Error('Erro ao buscar empresas');
+            }
+
+            return resposta.json();
+        })
+        .then(empresas => {
+            const select = document.getElementById('idDaEmpresa');
+
+            select.innerHTML = '<option value="">Selecione uma empresa</option>';
+
+            empresas.forEach(empresa => {
+                const option = document.createElement('option');
+
+                option.value = empresa.id;
+                option.textContent = empresa.name;
+
+                select.appendChild(option);
+            });
+        })
+        .catch(erro => {
+            console.error('Erro ao carregar empresas:', erro);
+
+            const select = document.getElementById('idDaEmpresa');
+            select.innerHTML = '<option value="">Erro ao carregar empresas</option>';
+        });
+</script>
+
+</body>
+</html>

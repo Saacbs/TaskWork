@@ -5,6 +5,7 @@ public class Colaborador {
     private  String email;
     private  String telefone;
     private  int IdDaEmpresa;
+    private String nomeEmpresa;
 
     public String getEmail() {
         return email;
@@ -37,4 +38,8 @@ public class Colaborador {
     public void setIdDaEmpresa(int idDaEmpresa) {
         IdDaEmpresa = idDaEmpresa;
     }
+
+    public String getNomeEmpresa() {return nomeEmpresa;}
+
+    public void setNomeEmpresa(String nomeEmpresa) {this.nomeEmpresa = nomeEmpresa;}
 }

@@ -1,9 +1,11 @@
+
 package Servlet;
 
-import dao.EmpresaDAO;
+import com.google.gson.Gson;
 import dao.ColaboradorDAO;
-import model.Empresa;
+import dao.EmpresaDAO;
 import model.Colaborador;
+import model.Empresa;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +18,8 @@ import java.util.List;
 @WebServlet("/create-colaborador")
 public class CreateColaboradorServlet extends HttpServlet {
 
+    private final Gson gson = new Gson();
+
     @Override
     protected void doGet(
             HttpServletRequest pedir,
@@ -23,12 +27,12 @@ public class CreateColaboradorServlet extends HttpServlet {
     ) throws ServletException, IOException {
 
         EmpresaDAO empresaDAO = new EmpresaDAO();
-
         List<Empresa> empresas = empresaDAO.listarEmpresas();
 
-        pedir.setAttribute("empresas", empresas);
+        resposta.setContentType("application/json");
+        resposta.setCharacterEncoding("UTF-8");
 
-        pedir.getRequestDispatcher("CadastroColaborador.jsp").forward(pedir, resposta);
+        resposta.getWriter().write(gson.toJson(empresas));
     }
 
     @Override
@@ -37,11 +41,15 @@ public class CreateColaboradorServlet extends HttpServlet {
             HttpServletResponse resposta
     ) throws ServletException, IOException {
 
+        pedir.setCharacterEncoding("UTF-8");
+
         String nome = pedir.getParameter("nome");
         String email = pedir.getParameter("email");
         String telefone = pedir.getParameter("telefone");
 
-        int idDaEmpresa = Integer.parseInt(pedir.getParameter("idDaEmpresa"));
+        int idDaEmpresa = Integer.parseInt(
+                pedir.getParameter("idDaEmpresa")
+        );
 
         Colaborador colaborador = new Colaborador();
 
@@ -50,7 +58,8 @@ public class CreateColaboradorServlet extends HttpServlet {
         colaborador.setTelefone(telefone);
         colaborador.setIdDaEmpresa(idDaEmpresa);
 
-        new ColaboradorDAO().createColaborador(colaborador);
+        ColaboradorDAO colaboradorDAO = new ColaboradorDAO();
+        colaboradorDAO.createColaborador(colaborador);
 
         resposta.sendRedirect("index.html");
     }

@@ -1,0 +1,59 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ page import="model.*,util.Web,java.util.*" %>
+<%
+String ctx = request.getContextPath();
+String rota = request.getServletPath();
+boolean paginaPublica = Arrays.asList("/inicio", "/login", "/cadastro").contains(rota);
+Object sucesso = session.getAttribute("sucesso");
+Object erroSessao = session.getAttribute("erro");
+session.removeAttribute("sucesso");
+session.removeAttribute("erro");
+%>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TaskWork — Central de atendimento</title>
+    <link rel="stylesheet" href="<%= ctx %>/css/style.css">
+    <script src="<%= ctx %>/js/interface.js" defer></script>
+</head>
+<body>
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+<header class="topbar">
+    <a class="marca" href="<%= ctx %>/inicio"><span class="marca-icone">T</span>TaskWork</a>
+    <div class="conta">
+        <% if (paginaPublica) { %>
+            <a href="<%= ctx %>/inicio#como-funciona">Como funciona</a>
+            <a href="<%= ctx %>/inicio#categorias">Categorias</a>
+            <a href="<%= ctx %>/inicio#duvidas">Dúvidas</a>
+            <a class="botao" href="<%= ctx %>/login">Acessar portal</a>
+        <% } else { %>
+            <a href="<%= ctx %>/notificacoes">Notificações</a>
+            <span class="avatar">A</span>
+            <span><strong>Administrador</strong><small>Administrador</small></span>
+            <a class="link" href="<%= ctx %>/inicio">Sair</a>
+        <% } %>
+    </div>
+</header>
+<div class="estrutura <%= paginaPublica ? "publica" : "" %>">
+    <% if (!paginaPublica) { %>
+        <aside class="sidebar">
+            <nav aria-label="Navegação principal">
+                <a class="<%= "/painel".equals(rota) ? "atual" : "" %>" href="<%= ctx %>/painel">Visão geral</a>
+                <a class="<%= "/chamados".equals(rota) ? "atual" : "" %>" href="<%= ctx %>/chamados">Chamados</a>
+                <a href="<%= ctx %>/chamados">Novo chamado</a>
+                <a class="<%= "/notificacoes".equals(rota) ? "atual" : "" %>" href="<%= ctx %>/notificacoes">Notificações</a>
+                <p class="menu-titulo">Áreas administrativas</p>
+                <a class="<%= "/relatorios".equals(rota) ? "atual" : "" %>" href="<%= ctx %>/relatorios">Relatórios</a>
+                <a class="<%= Arrays.asList("/empresas", "/usuarios", "/categorias").contains(rota) ? "atual" : "" %>" href="<%= ctx %>/empresas">Cadastros</a>
+                <a class="<%= "/solicitacoes".equals(rota) ? "atual" : "" %>" href="<%= ctx %>/solicitacoes">Solicitações de cadastro</a>
+            </nav>
+            <div class="ajuda-sidebar"><strong>Precisa de ajuda?</strong><span>Abra uma solicitação para nossa equipe.</span><a href="<%= ctx %>/chamados">Criar chamado →</a></div>
+            <p class="sidebar-rodape">TaskWork<br>Central de atendimento</p>
+        </aside>
+    <% } %>
+    <main id="conteudo">
+        <% if (request.getAttribute("erro") != null) { %><div class="alerta erro" role="alert"><%= Web.html(String.valueOf(request.getAttribute("erro"))) %></div><% } %>
+        <% if (erroSessao != null) { %><div class="alerta erro" role="alert"><%= Web.html(String.valueOf(erroSessao)) %></div><% } %>
+        <% if (sucesso != null) { %><div class="alerta sucesso" role="status"><%= Web.html(String.valueOf(sucesso)) %></div><% } %>

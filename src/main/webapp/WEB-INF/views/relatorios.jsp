@@ -1,0 +1,6 @@
+<%@ page pageEncoding="UTF-8" %>
+<%@ include file="cabecalho.jspf" %>
+<div class="titulo-acoes"><div><p class="rotulo">ADMINISTRAÇÃO</p><h1>Relatórios</h1><p>Consulte os chamados pelo período de criação.</p></div><button class="secundario" type="button" data-imprimir>Imprimir relatório</button></div>
+<section class="card"><h2>Filtros do relatório</h2><form class="filtros"><div><label for="inicio">Data inicial</label><input id="inicio" type="date"></div><div><label for="fim">Data final</label><input id="fim" type="date"></div><div><label for="status">Status</label><select id="status"><option>Todos</option><option>Em atendimento</option><option>Resolvido</option></select></div><button type="button">Aplicar filtros</button></form></section>
+<div class="indicadores quatro"><article class="card indicador"><span>Chamados resolvidos</span><strong>8</strong></article><article class="card indicador"><span>Dentro do SLA</span><strong>92%</strong></article><article class="card indicador"><span>Tempo médio de resolução</span><strong>7 h</strong></article><article class="card indicador"><span>Satisfação média</span><strong>4,8</strong></article></div><p class="ajuda">Prazos de SLA por prioridade: crítica 4 h, alta 8 h, média 24 h e baixa 48 h.</p>
+<%@ include file="rodape.jspf" %>

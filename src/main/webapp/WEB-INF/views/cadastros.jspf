@@ -1,0 +1,8 @@
+<p class="rotulo">ADMINISTRAÇÃO</p>
+<h1>Cadastros</h1>
+<p>Gerencie as empresas, pessoas e categorias de atendimento.</p>
+<nav class="abas" aria-label="Cadastros">
+    <a class="<%= "/empresas".equals(rota) ? "ativa" : "" %>" href="<%= ctx %>/empresas">Empresas</a>
+    <a class="<%= "/usuarios".equals(rota) ? "ativa" : "" %>" href="<%= ctx %>/usuarios">Usuários</a>
+    <a class="<%= "/categorias".equals(rota) ? "ativa" : "" %>" href="<%= ctx %>/categorias">Categorias</a>
+</nav>

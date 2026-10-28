@@ -3,8 +3,9 @@ package model;
 public class Empresa {
 
     private int id;
-    private String name;
+    private String nome;
     private String cnpj;
+    private boolean ativo = true;
 
     public int getId() {
         return id;
@@ -22,11 +23,19 @@ public class Empresa {
         this.cnpj = cnpj;
     }
 
-    public String getName() {
-        return name;
+    public String getNome() {
+        return nome;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public boolean isAtivo() {
+        return ativo;
+    }
+
+    public void setAtivo(boolean ativo) {
+        this.ativo = ativo;
     }
 }

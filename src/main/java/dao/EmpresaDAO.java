@@ -1,6 +1,7 @@
 package dao;
 
 import model.Empresa;
+
 import util.Banco;
 
 import java.sql.Connection;
@@ -11,14 +12,19 @@ import java.util.List;
 
 public class EmpresaDAO {
     public void salvar(Empresa empresa) {
-        String sql = empresa.getId() == 0
-                ? "INSERT INTO EMPRESA (NOME, CNPJ, ATIVO) VALUES (?, ?, ?)"
-                : "UPDATE EMPRESA SET NOME = ?, CNPJ = ?, ATIVO = ? WHERE ID = ?";
-        try (Connection conexao = Banco.conectar(); PreparedStatement comando = conexao.prepareStatement(sql)) {
-            comando.setString(1, empresa.getNome());
-            comando.setString(2, empresa.getCnpj());
-            comando.setBoolean(3, empresa.isAtivo());
-            if (empresa.getId() > 0) comando.setInt(4, empresa.getId());
+        String sql =
+                empresa.getId() == 0
+                        ? "INSERT INTO EMPRESA (NOME, CNPJ, ATIVO) VALUES (?, ?, ?)"
+                        : "UPDATE EMPRESA SET VERSAO_SESSAO=VERSAO_SESSAO+CASE WHEN ATIVO<>? THEN 1"
+                                + " ELSE 0 END, NOME=?, CNPJ=?, ATIVO=? WHERE ID=?";
+        try (Connection conexao = Banco.conectar();
+                PreparedStatement comando = conexao.prepareStatement(sql)) {
+            int indice = 1;
+            if (empresa.getId() > 0) comando.setBoolean(indice++, empresa.isAtivo());
+            comando.setString(indice++, empresa.getNome());
+            comando.setString(indice++, empresa.getCnpj());
+            comando.setBoolean(indice++, empresa.isAtivo());
+            if (empresa.getId() > 0) comando.setInt(indice++, empresa.getId());
             comando.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível salvar a empresa.", e);
@@ -28,8 +34,9 @@ public class EmpresaDAO {
     public List<Empresa> listar() {
         List<Empresa> empresas = new ArrayList<>();
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("SELECT * FROM EMPRESA ORDER BY NOME");
-             ResultSet resultado = comando.executeQuery()) {
+                PreparedStatement comando =
+                        conexao.prepareStatement("SELECT * FROM EMPRESA ORDER BY NOME");
+                ResultSet resultado = comando.executeQuery()) {
             while (resultado.next()) empresas.add(montar(resultado));
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível listar as empresas.", e);
@@ -39,7 +46,8 @@ public class EmpresaDAO {
 
     public Empresa buscarPorId(int id) {
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("SELECT * FROM EMPRESA WHERE ID = ?")) {
+                PreparedStatement comando =
+                        conexao.prepareStatement("SELECT * FROM EMPRESA WHERE ID = ?")) {
             comando.setInt(1, id);
             ResultSet resultado = comando.executeQuery();
             return resultado.next() ? montar(resultado) : null;
@@ -51,7 +59,8 @@ public class EmpresaDAO {
     public boolean excluir(int id) {
         if (temUsuarios(id)) return false;
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("DELETE FROM EMPRESA WHERE ID = ?")) {
+                PreparedStatement comando =
+                        conexao.prepareStatement("DELETE FROM EMPRESA WHERE ID = ?")) {
             comando.setInt(1, id);
             comando.executeUpdate();
             return true;
@@ -62,7 +71,9 @@ public class EmpresaDAO {
 
     private boolean temUsuarios(int empresaId) {
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("SELECT COUNT(*) FROM USUARIO WHERE EMPRESA_ID = ?")) {
+                PreparedStatement comando =
+                        conexao.prepareStatement(
+                                "SELECT COUNT(*) FROM USUARIO WHERE EMPRESA_ID = ?")) {
             comando.setInt(1, empresaId);
             ResultSet resultado = comando.executeQuery();
             return resultado.next() && resultado.getInt(1) > 0;
@@ -77,6 +88,7 @@ public class EmpresaDAO {
         empresa.setNome(resultado.getString("NOME"));
         empresa.setCnpj(resultado.getString("CNPJ"));
         empresa.setAtivo(resultado.getBoolean("ATIVO"));
+        empresa.setVersaoSessao(resultado.getInt("VERSAO_SESSAO"));
         return empresa;
     }
 }

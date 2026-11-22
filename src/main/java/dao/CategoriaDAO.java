@@ -1,6 +1,7 @@
 package dao;
 
 import model.Categoria;
+
 import util.Banco;
 
 import java.sql.Connection;
@@ -11,10 +12,12 @@ import java.util.List;
 
 public class CategoriaDAO {
     public void salvar(Categoria categoria) {
-        String sql = categoria.getId() == 0
-                ? "INSERT INTO CATEGORIA (NOME, DESCRICAO, ATIVO) VALUES (?, ?, ?)"
-                : "UPDATE CATEGORIA SET NOME=?, DESCRICAO=?, ATIVO=? WHERE ID=?";
-        try (Connection conexao = Banco.conectar(); PreparedStatement comando = conexao.prepareStatement(sql)) {
+        String sql =
+                categoria.getId() == 0
+                        ? "INSERT INTO CATEGORIA (NOME, DESCRICAO, ATIVO) VALUES (?, ?, ?)"
+                        : "UPDATE CATEGORIA SET NOME=?, DESCRICAO=?, ATIVO=? WHERE ID=?";
+        try (Connection conexao = Banco.conectar();
+                PreparedStatement comando = conexao.prepareStatement(sql)) {
             comando.setString(1, categoria.getNome());
             comando.setString(2, categoria.getDescricao());
             comando.setBoolean(3, categoria.isAtivo());
@@ -28,8 +31,9 @@ public class CategoriaDAO {
     public List<Categoria> listar() {
         List<Categoria> categorias = new ArrayList<>();
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("SELECT * FROM CATEGORIA ORDER BY NOME");
-             ResultSet resultado = comando.executeQuery()) {
+                PreparedStatement comando =
+                        conexao.prepareStatement("SELECT * FROM CATEGORIA ORDER BY NOME");
+                ResultSet resultado = comando.executeQuery()) {
             while (resultado.next()) categorias.add(montar(resultado));
         } catch (Exception e) {
             throw new RuntimeException("Não foi possível listar as categorias.", e);
@@ -39,7 +43,8 @@ public class CategoriaDAO {
 
     public Categoria buscarPorId(int id) {
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("SELECT * FROM CATEGORIA WHERE ID = ?")) {
+                PreparedStatement comando =
+                        conexao.prepareStatement("SELECT * FROM CATEGORIA WHERE ID = ?")) {
             comando.setInt(1, id);
             ResultSet resultado = comando.executeQuery();
             return resultado.next() ? montar(resultado) : null;
@@ -50,7 +55,8 @@ public class CategoriaDAO {
 
     public void excluir(int id) {
         try (Connection conexao = Banco.conectar();
-             PreparedStatement comando = conexao.prepareStatement("DELETE FROM CATEGORIA WHERE ID = ?")) {
+                PreparedStatement comando =
+                        conexao.prepareStatement("DELETE FROM CATEGORIA WHERE ID = ?")) {
             comando.setInt(1, id);
             comando.executeUpdate();
         } catch (Exception e) {

@@ -1,6 +1,15 @@
 package model;
 
 public class Empresa {
+    private int versaoSessao;
+
+    public int getVersaoSessao() {
+        return versaoSessao;
+    }
+
+    public void setVersaoSessao(int versaoSessao) {
+        this.versaoSessao = versaoSessao;
+    }
 
     private int id;
     private String nome;

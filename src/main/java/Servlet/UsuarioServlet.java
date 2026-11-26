@@ -1,65 +1,119 @@
 package Servlet;
 
-import dao.EmpresaDAO;
-import dao.UsuarioDAO;
-import model.Usuario;
+import dao.*;
+
+import model.*;
+
+import util.*;
+
+import java.io.IOException;
+import java.util.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
+import javax.servlet.http.*;
 
 @WebServlet("/usuarios")
 public class UsuarioServlet extends BaseServlet {
     private final UsuarioDAO dao = new UsuarioDAO();
-    private final EmpresaDAO empresaDAO = new EmpresaDAO();
+    private final EmpresaDAO empresas = new EmpresaDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest pedido, HttpServletResponse resposta) throws ServletException, IOException {
-        if ("excluir".equals(pedido.getParameter("acao"))) {
-            dao.excluir(inteiro(pedido.getParameter("id")));
-            pedido.getSession().setAttribute("sucesso", "Usuário excluído com sucesso.");
-            voltar(pedido, resposta, "/usuarios");
+    private boolean permitido(Usuario ator, Usuario alvo) {
+        return alvo != null
+                && !Seguranca.master(alvo)
+                && (Seguranca.master(ator)
+                        || alvo.getEmpresaId() == ator.getEmpresaId()
+                                && Arrays.asList("Colaborador", "Atendente")
+                                        .contains(alvo.getPerfil()));
+    }
+
+    protected void doGet(HttpServletRequest p, HttpServletResponse r)
+            throws ServletException, IOException {
+        Usuario ator = Seguranca.usuario(p), item = new Usuario();
+        int id = inteiro(p.getParameter("id"));
+        if (id > 0) {
+            item = dao.buscarPorId(id);
+            if (!permitido(ator, item)) {
+                r.sendError(403);
+                return;
+            }
+        }
+        carregar(p, item);
+        abrir(p, r, "usuarios.jsp");
+    }
+
+    protected void doPost(HttpServletRequest p, HttpServletResponse r)
+            throws ServletException, IOException {
+        Usuario ator = Seguranca.usuario(p), u = new Usuario();
+        int id = inteiro(p.getParameter("id"));
+        Usuario anterior = id > 0 ? dao.buscarPorId(id) : null;
+        if (id > 0 && !permitido(ator, anterior)) {
+            r.sendError(403);
             return;
         }
-        carregar(pedido, inteiro(pedido.getParameter("id")));
-        abrir(pedido, resposta, "usuarios.jsp");
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest pedido, HttpServletResponse resposta) throws ServletException, IOException {
-        pedido.setCharacterEncoding("UTF-8");
-        Usuario usuario = new Usuario();
-        usuario.setId(inteiro(pedido.getParameter("id")));
-        usuario.setNome(pedido.getParameter("nome").trim());
-        usuario.setEmail(pedido.getParameter("email").trim());
-        usuario.setTelefone(pedido.getParameter("telefone").trim());
-        usuario.setEmpresaId(inteiro(pedido.getParameter("empresaId")));
-        usuario.setPerfil(pedido.getParameter("perfil"));
-        usuario.setAtivo(pedido.getParameter("ativo") != null);
         try {
-            if (usuario.getNome().isEmpty() || usuario.getEmail().isEmpty() || usuario.getEmpresaId() == 0) {
-                throw new IllegalArgumentException("Preencha nome, e-mail e empresa.");
+            if ("excluir".equals(p.getParameter("acao"))) {
+                if (anterior == null) throw new IllegalArgumentException("Usuário não encontrado.");
+                dao.excluir(id, ator);
+                sucesso(p, "Usuário excluído.");
+                voltar(p, r, "/usuarios");
+                return;
             }
-            if (!Arrays.asList("Administrador", "Colaborador", "Atendente").contains(usuario.getPerfil())) {
-                throw new IllegalArgumentException("Perfil inválido.");
+            u.setId(id);
+            u.setNome(Validacao.texto(p, "nome", 160, true));
+            u.setEmail(Validacao.email(p));
+            u.setTelefone(Validacao.texto(p, "telefone", 25, false));
+            u.setPerfil(Validacao.texto(p, "perfil", 20, true));
+            if (!Arrays.asList("Administrador", "Colaborador", "Atendente").contains(u.getPerfil())
+                    || !Seguranca.master(ator) && "Administrador".equals(u.getPerfil())) {
+                r.sendError(403);
+                return;
             }
-            dao.salvar(usuario);
-            pedido.getSession().setAttribute("sucesso", "Usuário salvo com sucesso.");
-            voltar(pedido, resposta, "/usuarios");
-        } catch (Exception e) {
-            pedido.setAttribute("erro", e.getMessage());
-            carregar(pedido, usuario);
-            abrir(pedido, resposta, "usuarios.jsp");
+            int empresaId = inteiro(p.getParameter("empresaId"));
+            if (!Seguranca.master(ator) && empresaId != ator.getEmpresaId()) {
+                r.sendError(403);
+                return;
+            }
+            Empresa empresa = empresas.buscarPorId(empresaId);
+            if (empresa == null || !empresa.isAtivo())
+                throw new IllegalArgumentException("Selecione uma empresa ativa.");
+            if (anterior != null && anterior.getEmpresaId() != empresaId)
+                throw new IllegalArgumentException(
+                        "Não é permitido transferir usuários entre empresas. Inative o cadastro"
+                                + " anterior.");
+            u.setEmpresaId(empresaId);
+            u.setAtivo(p.getParameter("ativo") != null);
+            String senha = p.getParameter("senha");
+            u.setSenha(
+                    senha != null && !senha.isEmpty()
+                            ? Senha.gerar(senha)
+                            : anterior == null ? null : anterior.getSenha());
+            if (u.getSenha() == null)
+                throw new IllegalArgumentException("Informe a senha inicial do usuário.");
+            dao.salvar(u, ator);
+            sucesso(p, "Usuário salvo.");
+            voltar(p, r, "/usuarios");
+        } catch (IllegalArgumentException e) {
+            p.setAttribute("erro", e.getMessage());
+            carregar(p, u);
+            abrir(p, r, "usuarios.jsp");
         }
     }
 
-    private void carregar(HttpServletRequest pedido, int id) { carregar(pedido, id > 0 ? dao.buscarPorId(id) : new Usuario()); }
-    private void carregar(HttpServletRequest pedido, Usuario usuario) {
-        pedido.setAttribute("item", usuario == null ? new Usuario() : usuario);
-        pedido.setAttribute("itens", dao.listar());
-        pedido.setAttribute("empresas", empresaDAO.listar());
+    private void sucesso(HttpServletRequest p, String texto) {
+        p.getSession().setAttribute("sucesso", texto);
+    }
+
+    private void carregar(HttpServletRequest p, Usuario item) {
+        Usuario ator = Seguranca.usuario(p);
+        p.setAttribute("item", item);
+        List<Usuario> lista =
+                Seguranca.master(ator) ? dao.listar() : dao.listarEmpresa(ator.getEmpresaId());
+        lista.removeIf(u -> !permitido(ator, u));
+        p.setAttribute("itens", lista);
+        List<Empresa> listaEmpresas = empresas.listar();
+        listaEmpresas.removeIf(
+                e -> !e.isAtivo() || !Seguranca.master(ator) && e.getId() != ator.getEmpresaId());
+        p.setAttribute("empresas", listaEmpresas);
     }
 }

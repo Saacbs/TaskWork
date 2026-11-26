@@ -1,0 +1,16 @@
+TASKWORK — EXECUÇÃO LOCAL
+
+1. Abra no terminal a pasta que contém o pom.xml.
+2. Execute:
+   mvn clean package
+3. Quando aparecer BUILD SUCCESS, execute:
+   mvn tomcat7:run
+
+ACESSO MASTER
+
+   E-mail: master@taskwork.local
+   Senha: Master@123
+
+ACESSO H2
+   comando: java -cp "target/taskwork/WEB-INF/lib/h2-2.3.232.jar" org.h2.tools.Console -web -browser -webPort 8082
+

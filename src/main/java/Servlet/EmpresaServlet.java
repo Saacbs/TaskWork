@@ -1,56 +1,70 @@
 package Servlet;
 
 import dao.EmpresaDAO;
+
 import model.Empresa;
+
+import util.Validacao;
+
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.*;
 
 @WebServlet("/empresas")
 public class EmpresaServlet extends BaseServlet {
     private final EmpresaDAO dao = new EmpresaDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest pedido, HttpServletResponse resposta) throws ServletException, IOException {
-        if ("excluir".equals(pedido.getParameter("acao"))) {
-            if (dao.excluir(inteiro(pedido.getParameter("id")))) {
-                pedido.getSession().setAttribute("sucesso", "Empresa excluída com sucesso.");
-            } else {
-                pedido.getSession().setAttribute("erro", "Exclua os usuários da empresa antes de excluir a empresa.");
-            }
-            voltar(pedido, resposta, "/empresas");
+    protected void doGet(HttpServletRequest p, HttpServletResponse r)
+            throws ServletException, IOException {
+        int id = inteiro(p.getParameter("id"));
+        Empresa e = id > 0 ? dao.buscarPorId(id) : new Empresa();
+        if (e == null) {
+            r.sendError(404);
             return;
         }
-        carregar(pedido, inteiro(pedido.getParameter("id")));
-        abrir(pedido, resposta, "empresas.jsp");
+        carregar(p, e);
+        abrir(p, r, "empresas.jsp");
     }
 
-    @Override
-    protected void doPost(HttpServletRequest pedido, HttpServletResponse resposta) throws ServletException, IOException {
-        pedido.setCharacterEncoding("UTF-8");
-        Empresa empresa = new Empresa();
-        empresa.setId(inteiro(pedido.getParameter("id")));
-        empresa.setNome(pedido.getParameter("nome").trim());
-        empresa.setCnpj(pedido.getParameter("cnpj").trim());
-        empresa.setAtivo(pedido.getParameter("ativo") != null);
+    protected void doPost(HttpServletRequest p, HttpServletResponse r)
+            throws ServletException, IOException {
+        Empresa e = new Empresa();
+        e.setId(inteiro(p.getParameter("id")));
         try {
-            if (empresa.getNome().isEmpty() || empresa.getCnpj().isEmpty()) throw new IllegalArgumentException("Preencha nome e CNPJ.");
-            dao.salvar(empresa);
-            pedido.getSession().setAttribute("sucesso", "Empresa salva com sucesso.");
-            voltar(pedido, resposta, "/empresas");
-        } catch (Exception e) {
-            pedido.setAttribute("erro", e.getMessage());
-            carregar(pedido, empresa);
-            abrir(pedido, resposta, "empresas.jsp");
+            if ("excluir".equals(p.getParameter("acao"))) {
+                if (!dao.excluir(e.getId()))
+                    throw new IllegalArgumentException(
+                            "Empresa possui usuários. Inative o cadastro.");
+                p.getSession().setAttribute("sucesso", "Empresa excluída.");
+                voltar(p, r, "/empresas");
+                return;
+            }
+            e.setNome(Validacao.texto(p, "nome", 160, true));
+            String cnpj = Validacao.texto(p, "cnpj", 18, true).replaceAll("[^0-9]", "");
+            if (!cnpj.matches("[0-9]{14}"))
+                throw new IllegalArgumentException("O CNPJ deve conter 14 dígitos.");
+            e.setCnpj(cnpj);
+            e.setAtivo(p.getParameter("ativo") != null);
+            if (e.getId() > 0 && dao.buscarPorId(e.getId()) == null)
+                throw new IllegalArgumentException("Empresa não encontrada.");
+            dao.salvar(e);
+            p.getSession().setAttribute("sucesso", "Empresa salva.");
+            voltar(p, r, "/empresas");
+        } catch (Exception ex) {
+            p.setAttribute(
+                    "erro",
+                    ex instanceof IllegalArgumentException
+                            ? ex.getMessage()
+                            : "Não foi possível salvar. Confira o CNPJ e os vínculos da empresa.");
+            carregar(p, e);
+            abrir(p, r, "empresas.jsp");
         }
     }
 
-    private void carregar(HttpServletRequest pedido, int id) { carregar(pedido, id > 0 ? dao.buscarPorId(id) : new Empresa()); }
-    private void carregar(HttpServletRequest pedido, Empresa empresa) {
-        pedido.setAttribute("item", empresa == null ? new Empresa() : empresa);
-        pedido.setAttribute("itens", dao.listar());
+    private void carregar(HttpServletRequest p, Empresa e) {
+        p.setAttribute("item", e);
+        p.setAttribute("itens", dao.listar());
     }
 }

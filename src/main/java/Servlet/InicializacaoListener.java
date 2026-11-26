@@ -12,8 +12,7 @@ public class InicializacaoListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent evento) {
         Banco.inicializar();
     }
+
     @Override
-public void contextDestroyed(ServletContextEvent evento) {
-    
-}
+    public void contextDestroyed(ServletContextEvent evento) {}
 }

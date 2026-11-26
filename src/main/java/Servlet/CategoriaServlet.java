@@ -1,53 +1,66 @@
 package Servlet;
 
 import dao.CategoriaDAO;
+
 import model.Categoria;
+
+import util.Validacao;
+
+import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import javax.servlet.http.*;
 
 @WebServlet("/categorias")
 public class CategoriaServlet extends BaseServlet {
     private final CategoriaDAO dao = new CategoriaDAO();
 
-    @Override
-    protected void doGet(HttpServletRequest pedido, HttpServletResponse resposta) throws ServletException, IOException {
-        if ("excluir".equals(pedido.getParameter("acao"))) {
-            dao.excluir(inteiro(pedido.getParameter("id")));
-            pedido.getSession().setAttribute("sucesso", "Categoria excluída com sucesso.");
-            voltar(pedido, resposta, "/categorias");
+    protected void doGet(HttpServletRequest p, HttpServletResponse r)
+            throws ServletException, IOException {
+        int id = inteiro(p.getParameter("id"));
+        Categoria c = id > 0 ? dao.buscarPorId(id) : new Categoria();
+        if (c == null) {
+            r.sendError(404);
             return;
         }
-        carregar(pedido, inteiro(pedido.getParameter("id")));
-        abrir(pedido, resposta, "categorias.jsp");
+        carregar(p, c);
+        abrir(p, r, "categorias.jsp");
     }
 
-    @Override
-    protected void doPost(HttpServletRequest pedido, HttpServletResponse resposta) throws ServletException, IOException {
-        pedido.setCharacterEncoding("UTF-8");
-        Categoria categoria = new Categoria();
-        categoria.setId(inteiro(pedido.getParameter("id")));
-        categoria.setNome(pedido.getParameter("nome").trim());
-        categoria.setDescricao(pedido.getParameter("descricao").trim());
-        categoria.setAtivo(pedido.getParameter("ativo") != null);
+    protected void doPost(HttpServletRequest p, HttpServletResponse r)
+            throws ServletException, IOException {
+        Categoria c = new Categoria();
+        c.setId(inteiro(p.getParameter("id")));
         try {
-            if (categoria.getNome().isEmpty()) throw new IllegalArgumentException("Preencha o nome da categoria.");
-            dao.salvar(categoria);
-            pedido.getSession().setAttribute("sucesso", "Categoria salva com sucesso.");
-            voltar(pedido, resposta, "/categorias");
-        } catch (Exception e) {
-            pedido.setAttribute("erro", e.getMessage());
-            carregar(pedido, categoria);
-            abrir(pedido, resposta, "categorias.jsp");
+            if ("excluir".equals(p.getParameter("acao"))) {
+                dao.excluir(c.getId());
+                p.getSession().setAttribute("sucesso", "Categoria excluída.");
+                voltar(p, r, "/categorias");
+                return;
+            }
+            c.setNome(Validacao.texto(p, "nome", 160, true));
+            c.setDescricao(Validacao.texto(p, "descricao", 500, false));
+            c.setAtivo(p.getParameter("ativo") != null);
+            if (c.getId() > 0 && dao.buscarPorId(c.getId()) == null)
+                throw new IllegalArgumentException("Categoria não encontrada.");
+            dao.salvar(c);
+            p.getSession().setAttribute("sucesso", "Categoria salva.");
+            voltar(p, r, "/categorias");
+        } catch (Exception ex) {
+            p.setAttribute(
+                    "erro",
+                    ex instanceof IllegalArgumentException
+                            ? ex.getMessage()
+                            : "Categoria não pôde ser alterada/excluída. Se houver chamados"
+                                    + " vinculados, inative o cadastro.");
+            carregar(p, c);
+            abrir(p, r, "categorias.jsp");
         }
     }
 
-    private void carregar(HttpServletRequest pedido, int id) { carregar(pedido, id > 0 ? dao.buscarPorId(id) : new Categoria()); }
-    private void carregar(HttpServletRequest pedido, Categoria categoria) {
-        pedido.setAttribute("item", categoria == null ? new Categoria() : categoria);
-        pedido.setAttribute("itens", dao.listar());
+    private void carregar(HttpServletRequest p, Categoria c) {
+        p.setAttribute("item", c);
+        p.setAttribute("itens", dao.listar());
     }
 }

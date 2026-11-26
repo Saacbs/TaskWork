@@ -1,5 +1,6 @@
-    </main>
-</div>
-<footer class="rodape">TaskWork · Sistema de chamados</footer>
-</body>
+<%@ page pageEncoding="UTF-8" %>
+            </main>
+        </div>
+        <footer class="rodape">TaskWork · Sistema de chamados</footer>
+    </body>
 </html>

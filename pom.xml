@@ -8,6 +8,10 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>taskwork Maven Webapp</name>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -36,7 +40,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <release>17</release>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -45,6 +50,7 @@
                 <version>2.1</version>
                 <configuration>
                     <path>/</path>
+                    <uriEncoding>UTF-8</uriEncoding>
                 </configuration>
                 <executions>
                     <execution>

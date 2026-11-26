@@ -1,16 +1,92 @@
 TASKWORK — EXECUÇÃO LOCAL
 
+Requisitos: JDK 17 ou superior e Maven.
+
 1. Abra no terminal a pasta que contém o pom.xml.
 2. Execute:
    mvn clean package
 3. Quando aparecer BUILD SUCCESS, execute:
    mvn tomcat7:run
+4. Mantenha o terminal aberto e acesse:
+   http://localhost:8080/
 
-ACESSO MASTER
+PRIMEIRO ACESSO
 
+O administrador master de demonstração é criado automaticamente ao iniciar.
+Abra http://localhost:8080/login e use:
    E-mail: master@taskwork.local
    Senha: Master@123
 
-ACESSO H2
-   comando: java -cp "target/taskwork/WEB-INF/lib/h2-2.3.232.jar" org.h2.tools.Console -web -browser -webPort 8082
+As credenciais iniciais estão em MASTER_EMAIL e MASTER_SENHA no arquivo
+src/main/java/util/Banco.java. No banco, a senha é armazenada como hash.
+A conta é criada se esse e-mail não existir, inclusive em bancos existentes.
+Outros usuários são preservados. Reiniciar não redefine senha nem reativa
+contas já existentes. Alterar as constantes afeta somente novas criações,
+não modifica a senha do master que já está salva no banco.
+Se o e-mail já pertencer a outro perfil, a inicialização avisa o conflito,
+sem promover automaticamente esse usuário. Não é necessário /configuracao.
+Credenciais públicas de demonstração: use somente em ambiente local acadêmico.
 
+O master cadastra empresas e administradores em Cadastros.
+Os administradores cadastram colaboradores/atendentes da própria empresa
+ou aprovam os pedidos enviados em Solicitar cadastro.
+As categorias Hardware, Software, Rede e internet, Acesso e senha,
+E-mail corporativo, Impressoras e Outros são cadastradas automaticamente.
+A carga ocorre uma única vez, inclusive em bancos existentes, sem duplicar
+nomes nem alterar categorias cadastradas. Depois, podem ser editadas,
+desativadas ou excluídas normalmente, sem reaparecer ao reiniciar.
+
+INTELLIJ
+
+Se o terminal não reconhecer mvn, use o Maven integrado do IntelliJ:
+abra o pom.xml como projeto Maven, escolha Bundled (Maven 3) nas
+configurações, execute Lifecycle > package e Plugins > tomcat7 > run.
+
+BANCO E VERSÃO ANTERIOR
+
+Os dados ficam em dados/taskwork.mv.db. A atualização do esquema é
+automática e preserva os registros da etapa de CRUD.
+Antes de atualizar uma instalação com dados, pare o servidor e faça uma
+cópia de segurança da pasta dados. Não misture arquivos da versão antiga
+com os fontes desta entrega: extraia em uma pasta nova e copie somente
+a pasta dados, com o servidor parado, se quiser reaproveitar seu banco.
+
+Usuários antigos sem senha precisam receber uma senha no cadastro de
+usuários antes do login. O master pode ajustar esses cadastros.
+Chamados antigos sem empresa/solicitante aparecem somente para o master,
+que pode vincular o solicitante nos detalhes. A data antiga não é inventada
+e fica fora do cálculo de SLA quando não houver informação suficiente.
+
+ANEXOS E RELATÓRIOS
+
+PNG, JPG e PDF: até 5 arquivos por envio, 10 MB por arquivo e 20 MB no total.
+Os anexos ficam no H2, fora das páginas públicas, e o download verifica o
+acesso ao chamado. Imagens têm limite de 20 milhões de pixels.
+SLA em horas corridas: Crítica 4, Alta 8, Média 24 e Baixa 48.
+Os relatórios usam os registros visíveis ao perfil, não dados fictícios.
+
+FUNÇÕES RECUPERADAS
+
+- Status Aguardando contato, Aguardando aprovação e Recusado (com motivo).
+- Reabertura de resolvidos em até sete dias pelo solicitante. Administradores
+  podem reabrir encerrados dentro do seu acesso. O prazo original de SLA é
+  mantido; o chamado volta a Aberto para nova atribuição de atendimento.
+- Notas internas: a opção aparece para a equipe; o histórico é filtrado no
+  servidor e a nota não gera notificação ao solicitante.
+- Avaliação com nota e comentário, editável e removível pelo solicitante.
+- Exclusão individual de anexos pelo autor ou administrador autorizado.
+  Autor e data dos anexos antigos desconhecidos não são inventados.
+- Busca por protocolo, título, descrição e solicitante; filtro de categoria.
+- Relatórios com categoria e responsável, sem exportação CSV.
+- Marcar todas as notificações da própria conta como lidas.
+- Protocolo CH-AAAA-000001, prazo SLA, indicação de atraso e última atualização.
+
+O primeiro acesso é pelo login fixo de demonstração descrito acima.
+
+ESCOPO DA ENTREGA
+
+Java sem frameworks, Servlet/JSP/JDBC, H2 e execução Maven do projeto.
+README original preservado. Sem aba de auditoria e sem suíte de testes.
+Projeto acadêmico para uso local; não publicar este Tomcat antigo na internet.
+O token CSRF do envio de anexos ainda é enviado na URL da submissão.
+Antes de hospedagem pública, revisar esse envio e atualizar o servidor.

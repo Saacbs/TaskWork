@@ -1,5 +1,50 @@
 <%@ page pageEncoding="UTF-8" %>
 <%@ include file="cabecalho.jspf" %>
-<p class="rotulo">CENTRAL DE ATENDIMENTO</p><div class="titulo-acoes"><div><h1>Notificações</h1><p>Acompanhe as atualizações dos seus chamados.</p></div><button class="secundario" type="button">Marcar todas como lidas</button></div>
-<section class="card"><ul class="lista notificacoes"><li class="nao-lida"><span class="badge">Nova</span><a href="<%= ctx %>/chamado-detalhes">Seu chamado CH-2026-00125 está em atendimento.</a><small>Hoje, 10:30</small></li><li><span class="badge">Lida</span><a href="<%= ctx %>/chamado-detalhes">Uma atualização foi registrada no seu chamado.</a><small>Ontem, 15:20</small></li></ul></section>
+<p class="rotulo">CENTRAL DE ATENDIMENTO</p>
+<h1>Notificações</h1>
+<section class="card">
+    <form method="post" action="<%= ctx %>/notificacoes">
+        <%= util.Seguranca.campoCsrf(request) %>
+        <button class="secundario" name="acao" value="todas">Marcar todas como lidas</button>
+    </form>
+    <ul class="lista">
+        <%
+            List<Notificacao> itens = (List<Notificacao>) request.getAttribute("itens");
+            for (Notificacao n : itens) {
+        %>
+            <li>
+                <div>
+                    <strong><%= n.isLida()?"Lida":"Nova" %></strong>
+                    <p><%= Web.html(n.getTexto()) %></p>
+                    <small><%= Web.data(n.getCriadoEm()) %></small>
+                    <%
+                        if (n.getChamadoId() > 0) {
+                    %>
+                        <a href="<%= ctx %>/chamado-detalhes?id=<%= n.getChamadoId() %>">Ver chamado</a>
+                    <%
+                        }
+                    %>
+                </div>
+                <%
+                    if (!n.isLida()) {
+                %>
+                    <form method="post" action="<%= ctx %>/notificacoes">
+                        <%= util.Seguranca.campoCsrf(request) %>
+                        <input type="hidden" name="id" value="<%= n.getId() %>">
+                        <button class="secundario">Marcar como lida</button>
+                    </form>
+                <%
+                    }
+                %>
+            </li>
+        <%
+            }
+            if (itens.isEmpty()) {
+        %>
+            <li>Nenhuma notificação.</li>
+        <%
+            }
+        %>
+    </ul>
+</section>
 <%@ include file="rodape.jspf" %>
